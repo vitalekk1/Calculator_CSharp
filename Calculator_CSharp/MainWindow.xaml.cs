@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Input;
 
 namespace Calculator_CSharp
 {
@@ -30,9 +30,9 @@ namespace Calculator_CSharp
             {
                 //try
                 //{
-                    Btn_Result.Content = "= " + Expression.calculateExpression(text);
-               // }
-               // catch (Exception ex) { }
+                    Txt_Result.Content = "= " + Expression.Calculate(text);
+                //}
+                //catch (Exception ex) { }
             } else
                 if (e.OriginalSource == Btn_AC) {
                 if (text.Length == 0) { text = ""; }
@@ -45,7 +45,7 @@ namespace Calculator_CSharp
                 if (e.OriginalSource == Btn_Dot)
             {
                 String[] s = text.Split(delimiters);
-                if (!(s[s.Length - 1].Contains("."))) { text = text + ((Button)sender).Content; Txt_Operation.Content = text; }
+                if (!(s[s.Length - 1].Contains(","))) { text = text + ((Button)sender).Content; Txt_Operation.Content = text; }
             } else
             {
                 try
@@ -63,6 +63,31 @@ namespace Calculator_CSharp
                 catch (Exception ex) { }
 
             }
+            ((Button)sender).Focusable = false;
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.NumPad0) { Btn_0.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad1) { Btn_1.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad2) { Btn_2.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad3) { Btn_3.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad4) { Btn_4.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad5) { Btn_5.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad6) { Btn_6.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad7) { Btn_7.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad8) { Btn_8.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.NumPad9) { Btn_9.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Multiply) { Btn_Multiply.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Add) { Btn_Plus.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Divide) { Btn_Devide.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Subtract) { Btn_Minus.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Decimal) { Btn_Dot.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Enter) { Btn_Result.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.Back) { Btn_AC.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.D9) { Btn_Left.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+            if (e.Key == Key.D0) { Btn_Right.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+
         }
     }
 
@@ -70,168 +95,147 @@ namespace Calculator_CSharp
 
     public class Expression
     {
-
-        public static Dictionary<String, Int32> MAIN_MATH_OPERATIONS;
-
-
-        public Expression() {
-
-            MAIN_MATH_OPERATIONS = new Dictionary<String, Int32>();
-            MAIN_MATH_OPERATIONS.Add("x", 1);
-            MAIN_MATH_OPERATIONS.Add("/", 1);
-            MAIN_MATH_OPERATIONS.Add("+", 2);
-            MAIN_MATH_OPERATIONS.Add("-", 2);
+        static public double Calculate(string input)
+        {
+            string output = GetExpression(input); //Преобразовываем выражение в постфиксную запись
+            double result = Counting(output); //Решаем полученное выражение
+            return result; //Возвращаем результат
         }
 
-
-        public static String sortingStation(String expression, Dictionary<String, Int32> operations, String leftBracket,
-                                            String rightBracket)
+        static private string GetExpression(string input)
         {
-            if (expression == null || expression.Length == 0)
-                throw new Exception("Expression isn't specified.");
-            // Выходная строка, разбитая на "символы" - операции и операнды..
-            List<String> out1 = new List<String>();
-            // Стек операций.
-            Stack<String> stack = new Stack<String>();
+            string output = string.Empty; //Строка для хранения выражения
+            Stack<char> operStack = new Stack<char>(); //Стек для хранения операторов
 
-            // Удаление пробелов из выражения.
-            expression = expression.Replace(" ", "");
-
-            // Множество "символов", не являющихся операндами (операции и скобки).
-            HashSet<String> operationSymbols = new HashSet<String>(operations.Keys);
-            operationSymbols.Add(leftBracket);
-            operationSymbols.Add(rightBracket);
-
-            // Индекс, на котором закончился разбор строки на прошлой итерации.
-            int index = 0;
-            // Признак необходимости поиска следующего элемента.
-            Boolean findNext = true;
-            while (findNext)
+            for (int i = 0; i < input.Length; i++) //Для каждого символа в входной строке
             {
-                int nextOperationIndex = expression.Length;
-                String nextOperation = "";
-                // Поиск следующего оператора или скобки.
-                foreach (String operation in operationSymbols)
+                //Разделители пропускаем
+                if (IsDelimeter(input[i]))
+                    continue; //Переходим к следующему символу
+
+                //Если символ - цифра, то считываем все число
+                if (Char.IsDigit(input[i])) //Если цифра
                 {
-                    int i = expression.IndexOf(operation, index);
-                    if (i >= 0 && i < nextOperationIndex)
+                    //Читаем до разделителя или оператора, что бы получить число
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
                     {
-                        nextOperation = operation;
-                        nextOperationIndex = i;
+                        output += input[i]; //Добавляем каждую цифру числа к нашей строке
+                        i++; //Переходим к следующему символу
+
+                        if (i == input.Length) break; //Если символ - последний, то выходим из цикла
                     }
+
+                    output += " "; //Дописываем после числа пробел в строку с выражением
+                    i--; //Возвращаемся на один символ назад, к символу перед разделителем
                 }
-                // Оператор не найден.
-                if (nextOperationIndex == expression.Length)
+
+                //Если символ - оператор
+                if (IsOperator(input[i])) //Если оператор
                 {
-                    findNext = false;
-                }
-                else
-                {
-                    // Если оператору или скобке предшествует операнд, добавляем его в выходную строку.
-                    if (index != nextOperationIndex)
+                    if (input[i] == '(') //Если символ - открывающая скобка
+                        operStack.Push(input[i]); //Записываем её в стек
+                    else if (input[i] == ')') //Если символ - закрывающая скобка
                     {
-                        out1.Add(expression.Substring(index, nextOperationIndex));
-                    }
-                    // Обработка операторов и скобок.
-                    // Открывающая скобка.
-                    if (nextOperation.Equals(leftBracket))
-                    {
-                        stack.Push(nextOperation);
-                    }
-                    // Закрывающая скобка.
-                    else if (nextOperation.Equals(rightBracket))
-                    {
-                        while (!stack.Peek().Equals(leftBracket))
+                        //Выписываем все операторы до открывающей скобки в строку
+                        char s = operStack.Pop();
+
+                        while (s != '(')
                         {
-                            out1.Add(stack.Pop());
-                            if (stack.Count == 0)
-                            {
-                                throw new Exception("Unmatched brackets");
-                            }
+                            output += s.ToString() + ' ';
+                            s = operStack.Pop();
                         }
-                        stack.Pop();
                     }
-                    // Операция.
-                    else
+                    else //Если любой другой оператор
                     {
-                        while (stack.Count != 0 && !stack.Peek().Equals(leftBracket) &&
-                                (operations[nextOperation] >= operations[stack.Peek()]))
-                        {
-                            out1.Add(stack.Pop());
-                        }
-                        stack.Push(nextOperation);
+                        if (operStack.Count > 0) //Если в стеке есть элементы
+                            if (GetPriority(input[i]) <= GetPriority(operStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
+                                output += operStack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
+
+                        operStack.Push(char.Parse(input[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+
                     }
-                    index = nextOperationIndex + nextOperation.Length;
                 }
             }
-            // Добавление в выходную строку операндов после последнего операнда.
-            if (index != expression.Length)
-            {
-                out1.Add(expression.Substring(index));
-            }
-            // Пробразование выходного списка к выходной строке.
-            while (stack.Count != 0)
-            {
-                out1.Add(stack.Pop());
-            }
-            StringBuilder result = new StringBuilder();
-            if (out1.Count != 0)
-                
-                result.Append(out1[0]);
-            while (out1.Count != 0)
-                result.Append(" ").Append(out1[0]);
 
-            return result.ToString();
+            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
+            while (operStack.Count > 0)
+                output += operStack.Pop() + " ";
+
+            return output; //Возвращаем выражение в постфиксной записи
         }
 
-
-        public static String sortingStation(String expression, Dictionary<String, Int32> operations)
+        static private double Counting(string input)
         {
-            return sortingStation(expression, operations, "(", ")");
+            double result = 0; //Результат
+            Stack<double> temp = new Stack<double>(); //Dhtvtyysq стек для решения
+
+            for (int i = 0; i < input.Length; i++) //Для каждого символа в строке
+            {
+                //Если символ - цифра, то читаем все число и записываем на вершину стека
+                if (Char.IsDigit(input[i]))
+                {
+                    string a = string.Empty;
+
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
+                    {
+                        a += input[i]; //Добавляем
+                        i++;
+                        if (i == input.Length) break;
+                    }
+                    
+                    temp.Push(Double.Parse(a)); //Записываем в стек
+                    i--;
+                }
+                else if (IsOperator(input[i])) //Если символ - оператор
+                {
+                    //Берем два последних значения из стека
+                    double a = temp.Pop();
+                    double b = temp.Pop();
+
+                    switch (input[i]) //И производим над ними действие, согласно оператору
+                    {
+                        case '+': result = b + a; break;
+                        case '-': result = b - a; break;
+                        case 'x': result = b * a; break;
+                        case '/': result = b / a; break;
+                        //case '^': result = double.Parse(Math.Pow(double.Parse(b.ToString()), double.Parse(a.ToString())).ToString()); break;
+                    }
+                    temp.Push(result); //Результат вычисления записываем обратно в стек
+                }
+            }
+            return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
         }
 
-
-        public static double calculateExpression(String expression)
+        //Метод возвращает приоритет оператора
+        static private byte GetPriority(char s)
         {
-            int i = 0;
-            String rpn = sortingStation(expression, MAIN_MATH_OPERATIONS);
-            String[] tokenizer = rpn.Split(' ');
-            Stack<Double> stack = new Stack<Double>();
-            while (i < tokenizer.Length)
+            switch (s)
             {
-                String token = tokenizer[i];
-                // Операнд.
-                
-                if (!MAIN_MATH_OPERATIONS.Keys.Contains(token))
-                {
-                     stack.Push(Convert.ToDouble(token)); 
-                }
-                else
-                {
-                    double operand2 = stack.Pop();
-                    double operand1 = stack.Count == 0 ? 0 : stack.Pop();
-                    if (token.Equals("x"))
-                    {
-                        stack.Push(operand1 * operand2);
-                    }
-                    else if (token.Equals("/"))
-                    {
-                        stack.Push(operand1 / operand2);
-                    }
-                    else if (token.Equals("+"))
-                    {
-                        stack.Push(operand1 + operand2);
-                    }
-                    else if (token.Equals("-"))
-                    {
-                        stack.Push(operand1 - operand2);
-                    }
-                }
-                i++;
+                case '(': return 0;
+                case ')': return 1;
+                case '+': return 2;
+                case '-': return 3;
+                case 'x': return 4;
+                case '/': return 4;
+                case '^': return 5;
+                default: return 6;
             }
-            if (stack.Count != 1)
-                throw new Exception("Expression syntax error.");
-            return stack.Pop();
+        }
+
+        //Метод возвращает true, если проверяемый символ - оператор
+        static private bool IsOperator(char с)
+        {
+            if (("+-/x^()".IndexOf(с) != -1))
+                return true;
+            return false;
+        }
+
+        //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
+        static private bool IsDelimeter(char c)
+        {
+            if ((" =".IndexOf(c) != -1))
+                return true;
+            return false;
         }
 
     } 

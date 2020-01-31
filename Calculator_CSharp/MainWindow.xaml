@@ -5,30 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculator_CSharp"
         mc:Ignorable="d"
-        Title="Калькулятор" Height="450" Width="300">
+        Title="Калькулятор" Height="450" Width="300"
+        KeyDown="Window_KeyDown">
     <Grid>
-        <Button Content="0" HorizontalAlignment="Left" Margin="0,370,0,0" VerticalAlignment="Top" Width="141" Height="40" Click="OnClick"/>
-        <Button Name="Btn_Dot"    Content="." HorizontalAlignment="Left" Margin="142,370,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_0" Content="0" HorizontalAlignment="Left" Margin="0,370,0,0" VerticalAlignment="Top" Width="141" Height="40" Click="OnClick"/>
+        <Button Name="Btn_Dot"    Content="," HorizontalAlignment="Left" Margin="142,370,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Result" Content="=" HorizontalAlignment="Left" Margin="213,370,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="1" HorizontalAlignment="Left" Margin="0,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="2" HorizontalAlignment="Left" Margin="71,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="3" HorizontalAlignment="Left" Margin="142,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="4" HorizontalAlignment="Left" Margin="0,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="5" HorizontalAlignment="Left" Margin="71,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="6" HorizontalAlignment="Left" Margin="142,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="7" HorizontalAlignment="Left" Margin="0,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="8" HorizontalAlignment="Left" Margin="71,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Content="9" HorizontalAlignment="Left" Margin="142,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_1" Content="1" HorizontalAlignment="Left" Margin="0,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_2" Content="2" HorizontalAlignment="Left" Margin="71,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_3" Content="3" HorizontalAlignment="Left" Margin="142,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_4" Content="4" HorizontalAlignment="Left" Margin="0,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_5" Content="5" HorizontalAlignment="Left" Margin="71,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_6" Content="6" HorizontalAlignment="Left" Margin="142,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_7" Content="7" HorizontalAlignment="Left" Margin="0,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_8" Content="8" HorizontalAlignment="Left" Margin="71,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_9" Content="9" HorizontalAlignment="Left" Margin="142,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_AC"  Content="AC" HorizontalAlignment="Left" Margin="0,210,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Left"  Content="(" HorizontalAlignment="Left" Margin="71,210,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Right"   Content=")" HorizontalAlignment="Left" Margin="142,210,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Plus"    Content="+" HorizontalAlignment="Left" Margin="213,330,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Minus" Content="-" HorizontalAlignment="Left" Margin="213,290,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
-        <Button Name="Btn_Multiply"    Content="X" HorizontalAlignment="Left" Margin="213,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
+        <Button Name="Btn_Multiply"    Content="x" HorizontalAlignment="Left" Margin="213,250,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Button Name="Btn_Devide"    Content="/" HorizontalAlignment="Left" Margin="213,210,0,0" VerticalAlignment="Top" Width="70" Height="40" Click="OnClick"/>
         <Separator HorizontalAlignment="Left" Height="10" Margin="5,196,0,0" VerticalAlignment="Top" Width="272"/>
-        <Label Name="Txt_Operation" Content="Label" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top" Height="40" Width="267" FontSize="14" HorizontalContentAlignment="Right"/>
-        <Label Name="Txt_Result" Content="Label" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top" Width="267" Height="40" FontSize="18" HorizontalContentAlignment="Right"/>
+        <Label Name="Txt_Operation" Content="" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Height="40" Width="267" FontSize="20" HorizontalContentAlignment="Right"/>
+        <Label Name="Txt_Result" Content="" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="267" Height="40" FontSize="24" HorizontalContentAlignment="Right"/>
 
     </Grid>
 </Window>
