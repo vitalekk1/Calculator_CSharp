@@ -15,33 +15,34 @@ namespace Calculator_CSharp
     {
 
         String text = "";
-        Char[] delimiters = { '-', '+', 'x', '/', '(', ')' };
+        Char[] delimiters = { '-', '+', 'x', '/', '(', ')' };//Разделителя выражения
         String delimeters_operation = "-+x/";
-        String first_operation = "+x/)";
+        String first_operation = "+x/)";// Чтобы первым в строке не был знак
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        //Метод нажатия кнопок
         private void OnClick(Object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource == Btn_Result)
+            if (e.OriginalSource == Btn_Result) //Если нажата кнопка равно
             {
-                //try
-                //{
-                    Txt_Result.Content = "= " + Expression.Calculate(text);
-                //}
-                //catch (Exception ex) { }
+                try
+                {
+                    Txt_Result.Content = "= " + Expression.Calculate(text); //Отображаем результат в Lable 
+                }
+                catch (Exception ex) { }
             } else
                 if (e.OriginalSource == Btn_AC) {
-                if (text.Length == 0) { text = ""; }
-                else
-                {
-                    text = text.Substring(0, text.Length - 1);
-                    Txt_Operation.Content = text;
-                }
-            } else
+                    if (text.Length == 0) { text = ""; }
+                    else
+                    {
+                        text = text.Substring(0, text.Length - 1);
+                        Txt_Operation.Content = text;
+                    }
+                } else
                 if (e.OriginalSource == Btn_Dot)
             {
                 String[] s = text.Split(delimiters);
