@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,29 +29,34 @@ namespace Calculator_CSharp
             {
                 try
                 {
-                    Txt_Result.Content = "= " + Expression.Calculate(text); //Отображаем результат в Lable 
+                    Txt_Result.Content = "= " + Expression.Calculate(text); //Запускаем вычисление и Отображаем результат в Lable 
                 }
                 catch (Exception ex) { }
-            } else
-                if (e.OriginalSource == Btn_AC) {
-                    if (text.Length == 0) { text = ""; }
-                    else
-                    {
-                        text = text.Substring(0, text.Length - 1);
-                        Txt_Operation.Content = text;
-                    }
-                } else
-                if (e.OriginalSource == Btn_Dot)
+            }
+            else
+                if (e.OriginalSource == Btn_AC) //Если нажата кнопка отчистки
+            {
+                if (text.Length == 0) { text = ""; }
+                else
+                {
+                    text = text.Substring(0, text.Length - 1); //Удаляем один знак
+                    Txt_Operation.Content = text;
+                }
+            }
+            else
+                if (e.OriginalSource == Btn_Dot) //если начата точка
             {
                 String[] s = text.Split(delimiters);
-                if (!(s[s.Length - 1].Contains(","))) { text = text + ((Button)sender).Content; Txt_Operation.Content = text; }
-            } else
-            {
+                if (!(s[s.Length - 1].Contains(","))) { text = text + ((Button)sender).Content; Txt_Operation.Content = text; } //проверяем чтобы нельзя было поставить несколько точек одновременно
+            }
+            else
+            { //Нажаты все остальные кнопки
                 try
                 {
-                    if ((delimeters_operation.Contains(((Button)sender).Content.ToString())) && delimeters_operation.Contains(text.Substring(text.Length - 1))) { } else
+                    if ((delimeters_operation.Contains(((Button)sender).Content.ToString())) && delimeters_operation.Contains(text.Substring(text.Length - 1))) { }  //Проверяем чтобы нельзя было поставить несколько операций одновременно
+                    else
                     {
-                        if ((text == "") && (first_operation.Contains(((Button)sender).Content.ToString()))) { }
+                        if ((text == "") && (first_operation.Contains(((Button)sender).Content.ToString()))) { }  //Чтобы нельзя было поставить первым операцию
                         else
                         {
                             text = text + ((Button)sender).Content.ToString();
@@ -67,6 +70,7 @@ namespace Calculator_CSharp
             ((Button)sender).Focusable = false;
         }
 
+        //нажатие клавиш на клавиатуры
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.NumPad0) { Btn_0.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
@@ -93,7 +97,7 @@ namespace Calculator_CSharp
     }
 
 
-
+    //Алгоритм Обратной Польской Нотации
     public class Expression
     {
         static public double Calculate(string input)
@@ -183,7 +187,7 @@ namespace Calculator_CSharp
                         i++;
                         if (i == input.Length) break;
                     }
-                    
+
                     temp.Push(Double.Parse(a)); //Записываем в стек
                     i--;
                 }
@@ -199,7 +203,7 @@ namespace Calculator_CSharp
                         case '-': result = b - a; break;
                         case 'x': result = b * a; break;
                         case '/': result = b / a; break;
-                        //case '^': result = double.Parse(Math.Pow(double.Parse(b.ToString()), double.Parse(a.ToString())).ToString()); break;
+                            //case '^': result = double.Parse(Math.Pow(double.Parse(b.ToString()), double.Parse(a.ToString())).ToString()); break;
                     }
                     temp.Push(result); //Результат вычисления записываем обратно в стек
                 }
@@ -239,5 +243,5 @@ namespace Calculator_CSharp
             return false;
         }
 
-    } 
+    }
 }
